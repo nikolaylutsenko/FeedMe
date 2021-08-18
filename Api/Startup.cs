@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Service;
+using Service.Interfaces;
 
 namespace Api
 {
@@ -31,7 +33,15 @@ namespace Api
                 .AddDefaultTokenProviders();
 
             services.AddControllers();
+
+            SetUpServices(services);
+
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" }); });
+        }
+
+        private static void SetUpServices(IServiceCollection services)
+        {
+            services.AddTransient(typeof(IService<>), typeof(Service<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

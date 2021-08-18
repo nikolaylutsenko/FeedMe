@@ -6,5 +6,9 @@ namespace Core.Models
     {
         public float Weight { get; set; }
         public DateTime Date { get; set; }
+        public string UserId { get; set; }
+
+        // navigation prop
+        public AppUser User { get; set; }
     }
 }

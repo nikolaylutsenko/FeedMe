@@ -13,11 +13,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Controllers"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\Infrastructure\Infrastructure.csproj"/>
+        <ProjectReference Include="..\Request\Request.csproj"/>
+        <ProjectReference Include="..\Service\Service.csproj"/>
     </ItemGroup>
 
 </Project>
