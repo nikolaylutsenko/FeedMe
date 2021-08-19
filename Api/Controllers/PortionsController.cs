@@ -21,7 +21,7 @@ namespace Api.Controllers
             _portionService = portionService;
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> AddPotionAsync(AddPotionRequest request)
         {
             // get current user

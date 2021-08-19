@@ -28,7 +28,7 @@ namespace Api
             services.AddDbContext<AppDbContext>(options =>
                 options.UseMySQL("server=localhost;user=root;password=1975;database=feedMeDb;"));
 
-            services.AddIdentity<AppUser, IdentityRole>()
+            services.AddIdentity<AppUser, AppRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 

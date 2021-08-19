@@ -1,12 +1,11 @@
 ﻿using System;
 using Core.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Context
 {
-    public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
+    public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
         public AppDbContext()
         {
