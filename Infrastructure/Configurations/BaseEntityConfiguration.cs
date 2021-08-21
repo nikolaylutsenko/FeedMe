@@ -9,7 +9,6 @@ namespace Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<T> builder)
         {
             builder.Property(x => x.Id)
-                .HasMaxLength(36)
                 .ValueGeneratedOnAdd()
                 .IsRequired();
             builder.HasKey(x => x.Id);

@@ -13,6 +13,7 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<byte[]>(type: "varbinary(16)", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     Name = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
@@ -45,6 +46,20 @@ namespace Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "IdentityRole<Guid>",
+                columns: table => new
+                {
+                    Id = table.Column<byte[]>(type: "varbinary(16)", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    NormalizedName = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IdentityRole<Guid>", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -106,8 +121,8 @@ namespace Infrastructure.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "varchar(36)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "varchar(36)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "varchar(767)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "varchar(767)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<byte[]>(type: "varbinary(16)", nullable: false)
                 },
@@ -151,8 +166,8 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<byte[]>(type: "varbinary(16)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "varchar(36)", nullable: false),
-                    Name = table.Column<string>(type: "varchar(36)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "varchar(767)", nullable: false),
+                    Name = table.Column<string>(type: "varchar(767)", nullable: false),
                     Value = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -220,6 +235,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "IdentityRole<Guid>");
 
             migrationBuilder.DropTable(
                 name: "Portions");

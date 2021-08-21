@@ -31,12 +31,20 @@ namespace Api.Controllers
             {
                 Weight = request.Weight,
                 Date = DateTime.UtcNow,
-                UserId = userId
+                //UserId = Guid.NewGuid()
             };
 
             await _portionService.AddAsync(portion);
 
             return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllPotionsAsync()
+        {
+            var portions = _portionService.GetAllAsync();
+
+            return Ok(portions);
         }
     }
 }
