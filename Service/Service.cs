@@ -26,13 +26,9 @@ namespace Service
             await _context.SaveChangesAsync();
         }
 
-        public async Task<T> GetAsync(string id)
+        public async Task<T> GetAsync(Guid id)
         {
-            if (string.IsNullOrEmpty(id)) throw new ArgumentException("Pass empty value", nameof(id));
-
             var result = await _dbSet.FindAsync(id);
-
-            if (result is null) throw new ArgumentNullException(nameof(result), $"Item with id {id} not found");
 
             return result;
         }
@@ -44,20 +40,27 @@ namespace Service
             return result;
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            if (string.IsNullOrEmpty(id)) throw new ArgumentException("Pass empty value", nameof(id));
             var item = await _dbSet.FindAsync(id);
+
+            if (item is null) return false;
+
             _dbSet.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
-        public async Task UpdateAsync(T item)
+        public async Task<bool> UpdateAsync(T item)
         {
-            if (item is null) throw new ArgumentNullException(nameof(item), "Pass empty value");
+            if (item is null) return false;
 
             _dbSet.Update(item);
 
             await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

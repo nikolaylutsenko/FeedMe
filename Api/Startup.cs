@@ -32,6 +32,8 @@ namespace Api
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddAutoMapper(typeof(Startup).Assembly);
+
             services.AddControllers();
 
             SetUpServices(services);
