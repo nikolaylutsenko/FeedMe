@@ -1,17 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
 namespace Core.Models
 {
     public class AppUser : IdentityUser<Guid>
     {
-        // public AppUser()
-        // {
-        //     Portions = new List<Portion>();
-        // }
+        public AppUser()
+        {
+            Pets = new List<Pet>();
+        }
 
         // navigation prop
-        //public virtual ICollection<Portion> Portions { get; set; }
+        public ICollection<Pet> Pets { get; set; }
     }
 
     public class AppRole : IdentityRole<Guid>

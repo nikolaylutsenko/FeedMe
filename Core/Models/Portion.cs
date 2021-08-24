@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Core.Models
 {
@@ -7,9 +8,7 @@ namespace Core.Models
         public float Weight { get; set; }
         public DateTime Date { get; set; }
 
-        //public Guid? UserId { get; set; }
-
         // navigation prop
-        //public AppUser User { get; set; }
+        public ICollection<Pet> Pets { get; set; }
     }
 }
