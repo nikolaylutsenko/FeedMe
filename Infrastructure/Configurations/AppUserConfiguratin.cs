@@ -12,6 +12,18 @@ namespace Infrastructure.Configurations
         {
             builder.Property(x => x.Id)
                 .IsRequired();
+
+            builder.HasData(new AppUser
+            {
+                Id = Guid.Parse(StaticValues.TestUserId),
+                UserName = "TestUser",
+                NormalizedUserName = "TestUser".ToUpper(),
+                Email = StaticValues.TestUserEmail,
+                NormalizedEmail = StaticValues.TestUserEmail.ToUpper(),
+                ConcurrencyStamp = StaticValues.TestUserId,
+                PasswordHash = "AQAAAAEAACcQAAAAEEClBxq6oh/8fiBfjff6gQKaxj9waQ209eomjVCablbdV4NiD3ZLF/p4uMSaxLAXXQ==",
+                SecurityStamp = StaticValues.TestUserId
+            });
         }
     }
 
