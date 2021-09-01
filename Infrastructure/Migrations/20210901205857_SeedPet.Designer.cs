@@ -3,14 +3,16 @@ using System;
 using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210901205857_SeedPet")]
+    partial class SeedPet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,12 +141,12 @@ namespace Infrastructure.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@FEED.ME",
-                            NormalizedUserName = "ADMIN",
+                            NormalizedUserName = "TESTUSER",
                             PasswordHash = "AQAAAAEAACcQAAAAEEClBxq6oh/8fiBfjff6gQKaxj9waQ209eomjVCablbdV4NiD3ZLF/p4uMSaxLAXXQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "5e6ab61a-384d-47c3-a491-2da6332310da",
                             TwoFactorEnabled = false,
-                            UserName = "Admin"
+                            UserName = "TestUser"
                         });
                 });
 

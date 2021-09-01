@@ -174,7 +174,11 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    RoleId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    RoleId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Discriminator = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserId1 = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
+                    RoleId1 = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -186,11 +190,23 @@ namespace Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId1",
+                        column: x => x.RoleId1,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -266,9 +282,24 @@ namespace Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
+                values: new object[] { new Guid("88f0fac4-c1ac-4d20-8581-ae86c9562917"), "88f0fac4-c1ac-4d20-8581-ae86c9562917", "Admin role for administrative purposes", "admin", "ADMIN" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
+                values: new object[] { new Guid("f819a198-c0a1-4a38-8f6f-81f89cec2e20"), "f819a198-c0a1-4a38-8f6f-81f89cec2e20", "User role for regular access rights", "user", "USER" });
+
+            migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("5e6ab61a-384d-47c3-a491-2da6332310da"), 0, "5e6ab61a-384d-47c3-a491-2da6332310da", "test.user@gmail.com", false, false, null, "TEST.USER@GMAIL.COM", "TESTUSER", "AQAAAAEAACcQAAAAEEClBxq6oh/8fiBfjff6gQKaxj9waQ209eomjVCablbdV4NiD3ZLF/p4uMSaxLAXXQ==", null, false, "5e6ab61a-384d-47c3-a491-2da6332310da", false, "TestUser" });
+                values: new object[] { new Guid("5e6ab61a-384d-47c3-a491-2da6332310da"), 0, "5e6ab61a-384d-47c3-a491-2da6332310da", "admin@feed.me", false, false, null, "ADMIN@FEED.ME", "TESTUSER", "AQAAAAEAACcQAAAAEEClBxq6oh/8fiBfjff6gQKaxj9waQ209eomjVCablbdV4NiD3ZLF/p4uMSaxLAXXQ==", null, false, "5e6ab61a-384d-47c3-a491-2da6332310da", false, "TestUser" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId", "Discriminator", "RoleId1", "UserId1" },
+                values: new object[] { new Guid("88f0fac4-c1ac-4d20-8581-ae86c9562917"), new Guid("5e6ab61a-384d-47c3-a491-2da6332310da"), "AppUserRole", null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -295,6 +326,16 @@ namespace Infrastructure.Migrations
                 name: "IX_AspNetUserRoles_RoleId",
                 table: "AspNetUserRoles",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_RoleId1",
+                table: "AspNetUserRoles",
+                column: "RoleId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_UserId1",
+                table: "AspNetUserRoles",
+                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",

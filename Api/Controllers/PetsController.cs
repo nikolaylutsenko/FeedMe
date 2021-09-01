@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.Models;
 using Infrastructure;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
 
@@ -16,17 +17,19 @@ namespace Api.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IService<Pet> _petService;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public PetsController(IService<Pet> petService, IMapper mapper)
+        public PetsController(IService<Pet> petService, IMapper mapper, SignInManager<AppUser> signInManager)
         {
             _petService = petService;
             _mapper = mapper;
+            _signInManager = signInManager;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCurrentPetAsync()
         {
-            var userId = User.FindFirstValue(ClaimTypes.Name) ?? StaticValues.TestUserId;
+            var userId = User.FindFirstValue(ClaimTypes.Name) ?? StaticValues.AdminUserId;
 
             var pet = (await _petService.GetAllAsync()).FirstOrDefault(x => x.OwnerId == Guid.Parse(userId));
 
@@ -40,7 +43,7 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddPetAsync(AddPetRequest request)
         {
-            var userId = User.FindFirstValue(ClaimTypes.Name) ?? StaticValues.TestUserId;
+            var userId = User.FindFirstValue(ClaimTypes.Name) ?? StaticValues.AdminUserId;
 
             var pet = _mapper.Map<Pet>(request);
             pet.OwnerId = Guid.Parse(userId);

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210827210249_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20210901204611_ModifyRelationshipPetPortion")]
+    partial class ModifyRelationshipPetPortion
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,6 +47,24 @@ namespace Infrastructure.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("88f0fac4-c1ac-4d20-8581-ae86c9562917"),
+                            ConcurrencyStamp = "88f0fac4-c1ac-4d20-8581-ae86c9562917",
+                            Description = "Admin role for administrative purposes",
+                            Name = "admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("f819a198-c0a1-4a38-8f6f-81f89cec2e20"),
+                            ConcurrencyStamp = "f819a198-c0a1-4a38-8f6f-81f89cec2e20",
+                            Description = "User role for regular access rights",
+                            Name = "user",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Core.Models.AppUser", b =>
@@ -119,10 +137,10 @@ namespace Infrastructure.Migrations
                             Id = new Guid("5e6ab61a-384d-47c3-a491-2da6332310da"),
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "5e6ab61a-384d-47c3-a491-2da6332310da",
-                            Email = "test.user@gmail.com",
+                            Email = "admin@feed.me",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            NormalizedEmail = "TEST.USER@GMAIL.COM",
+                            NormalizedEmail = "ADMIN@FEED.ME",
                             NormalizedUserName = "TESTUSER",
                             PasswordHash = "AQAAAAEAACcQAAAAEEClBxq6oh/8fiBfjff6gQKaxj9waQ209eomjVCablbdV4NiD3ZLF/p4uMSaxLAXXQ==",
                             PhoneNumberConfirmed = false,
@@ -163,10 +181,15 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<Guid>("PetId")
+                        .HasColumnType("char(36)");
+
                     b.Property<float>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PetId");
 
                     b.ToTable("Portions");
                 });
@@ -264,11 +287,17 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("RoleId")
                         .HasColumnType("char(36)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUserRole<Guid>");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -290,19 +319,28 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("PetPortion", b =>
+            modelBuilder.Entity("Core.Models.AppUserRole", b =>
                 {
-                    b.Property<Guid>("PetsId")
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>");
+
+                    b.Property<Guid?>("RoleId1")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("PortionsId")
+                    b.Property<Guid?>("UserId1")
                         .HasColumnType("char(36)");
 
-                    b.HasKey("PetsId", "PortionsId");
+                    b.HasIndex("RoleId1");
 
-                    b.HasIndex("PortionsId");
+                    b.HasIndex("UserId1");
 
-                    b.ToTable("PetPortion");
+                    b.HasDiscriminator().HasValue("AppUserRole");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("5e6ab61a-384d-47c3-a491-2da6332310da"),
+                            RoleId = new Guid("88f0fac4-c1ac-4d20-8581-ae86c9562917")
+                        });
                 });
 
             modelBuilder.Entity("Core.Models.Pet", b =>
@@ -314,6 +352,17 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("Core.Models.Portion", b =>
+                {
+                    b.HasOne("Core.Models.Pet", "Pet")
+                        .WithMany("Portions")
+                        .HasForeignKey("PetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pet");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -367,24 +416,29 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PetPortion", b =>
+            modelBuilder.Entity("Core.Models.AppUserRole", b =>
                 {
-                    b.HasOne("Core.Models.Pet", null)
+                    b.HasOne("Core.Models.AppRole", "Role")
                         .WithMany()
-                        .HasForeignKey("PetsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoleId1");
 
-                    b.HasOne("Core.Models.Portion", null)
+                    b.HasOne("Core.Models.AppUser", "User")
                         .WithMany()
-                        .HasForeignKey("PortionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Core.Models.AppUser", b =>
                 {
                     b.Navigation("Pets");
+                });
+
+            modelBuilder.Entity("Core.Models.Pet", b =>
+                {
+                    b.Navigation("Portions");
                 });
 #pragma warning restore 612, 618
         }

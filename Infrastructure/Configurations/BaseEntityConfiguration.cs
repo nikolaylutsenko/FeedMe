@@ -9,6 +9,7 @@ namespace Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<T> builder)
         {
             builder.Property(x => x.Id)
+                .HasDefaultValueSql("newid()")
                 .ValueGeneratedOnAdd()
                 .IsRequired();
             builder.HasKey(x => x.Id);

@@ -11,7 +11,8 @@ namespace Core.Models
         }
 
         public string Name { get; set; }
-        public DateTime BirthDay { get; set; }
+        public float? Weight { get; set; }
+        public DateTime? BirthDay { get; set; }
         public Guid OwnerId { get; set; }
 
         //navigation prop

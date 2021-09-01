@@ -3,14 +3,16 @@ using System;
 using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210901204301_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,12 +141,12 @@ namespace Infrastructure.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@FEED.ME",
-                            NormalizedUserName = "ADMIN",
+                            NormalizedUserName = "TESTUSER",
                             PasswordHash = "AQAAAAEAACcQAAAAEEClBxq6oh/8fiBfjff6gQKaxj9waQ209eomjVCablbdV4NiD3ZLF/p4uMSaxLAXXQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "5e6ab61a-384d-47c3-a491-2da6332310da",
                             TwoFactorEnabled = false,
-                            UserName = "Admin"
+                            UserName = "TestUser"
                         });
                 });
 
@@ -154,35 +156,20 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime?>("BirthDay")
+                    b.Property<DateTime>("BirthDay")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("longtext");
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("char(36)");
-
-                    b.Property<float?>("Weight")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Pets");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("748d9d6e-3e8a-4e47-98d0-a3c24f1a56d9"),
-                            BirthDay = new DateTime(2020, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Basya",
-                            OwnerId = new Guid("5e6ab61a-384d-47c3-a491-2da6332310da"),
-                            Weight = 2f
-                        });
                 });
 
             modelBuilder.Entity("Core.Models.Portion", b =>
@@ -194,15 +181,10 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("PetId")
-                        .HasColumnType("char(36)");
-
                     b.Property<float>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PetId");
 
                     b.ToTable("Portions");
                 });
@@ -332,6 +314,21 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("PetPortion", b =>
+                {
+                    b.Property<Guid>("PetsId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("PortionsId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("PetsId", "PortionsId");
+
+                    b.HasIndex("PortionsId");
+
+                    b.ToTable("PetPortion");
+                });
+
             modelBuilder.Entity("Core.Models.AppUserRole", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>");
@@ -365,17 +362,6 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("Core.Models.Portion", b =>
-                {
-                    b.HasOne("Core.Models.Pet", "Pet")
-                        .WithMany("Portions")
-                        .HasForeignKey("PetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pet");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -429,6 +415,21 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PetPortion", b =>
+                {
+                    b.HasOne("Core.Models.Pet", null)
+                        .WithMany()
+                        .HasForeignKey("PetsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Models.Portion", null)
+                        .WithMany()
+                        .HasForeignKey("PortionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Core.Models.AppUserRole", b =>
                 {
                     b.HasOne("Core.Models.AppRole", "Role")
@@ -447,11 +448,6 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Core.Models.AppUser", b =>
                 {
                     b.Navigation("Pets");
-                });
-
-            modelBuilder.Entity("Core.Models.Pet", b =>
-                {
-                    b.Navigation("Portions");
                 });
 #pragma warning restore 612, 618
         }

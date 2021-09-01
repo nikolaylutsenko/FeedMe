@@ -3,14 +3,16 @@ using System;
 using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210901205404_ModifyPet")]
+    partial class ModifyPet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,12 +141,12 @@ namespace Infrastructure.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@FEED.ME",
-                            NormalizedUserName = "ADMIN",
+                            NormalizedUserName = "TESTUSER",
                             PasswordHash = "AQAAAAEAACcQAAAAEEClBxq6oh/8fiBfjff6gQKaxj9waQ209eomjVCablbdV4NiD3ZLF/p4uMSaxLAXXQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "5e6ab61a-384d-47c3-a491-2da6332310da",
                             TwoFactorEnabled = false,
-                            UserName = "Admin"
+                            UserName = "TestUser"
                         });
                 });
 
@@ -173,16 +175,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Pets");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("748d9d6e-3e8a-4e47-98d0-a3c24f1a56d9"),
-                            BirthDay = new DateTime(2020, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Basya",
-                            OwnerId = new Guid("5e6ab61a-384d-47c3-a491-2da6332310da"),
-                            Weight = 2f
-                        });
                 });
 
             modelBuilder.Entity("Core.Models.Portion", b =>
